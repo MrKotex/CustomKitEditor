@@ -1,0 +1,4 @@
+name: CustomKit
+version: '${project.version}'
+main: dev.timury.customkit.CustomKit
+api-version: '1.17'

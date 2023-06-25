@@ -83,5 +83,11 @@
             <scope>system</scope>
             <systemPath>${project.basedir}/libs/StrikePractice-dev-85853950987-1687473504.jar</systemPath>
         </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.26</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 </project>

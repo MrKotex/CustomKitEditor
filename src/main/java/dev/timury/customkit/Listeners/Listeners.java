@@ -1,14 +1,19 @@
 package dev.timury.customkit.Listeners;
 
 import dev.timury.customkit.CustomKit;
+import dev.timury.customkit.util.HexColours;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.inventory.CraftItemEvent;
+import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+
+import java.util.List;
 
 public class Listeners implements Listener {
 
@@ -40,6 +45,49 @@ public class Listeners implements Listener {
         Player player = event.getPlayer();
         if(player.getWorld().getName().equals("world")){
             if(!player.hasPermission("StrikePractice.staff")){
+                event.setCancelled(true);
+            }
+        }
+    }
+
+    @EventHandler
+    public void onPickup(EntityPickupItemEvent event) {
+        if(event.getEntity() instanceof Player player){
+            if(instance.isIneditroom.get(player.getUniqueId()) != null && instance.isIneditroom.get(player.getUniqueId()).equals(true)){
+                player.setCanPickupItems(false);
+            }
+        }
+    }
+    @EventHandler
+    public void DestroyBlock(BlockBreakEvent event){
+        Player player = event.getPlayer();
+        if(player.getWorld().getName().equals("world")){
+            if(!player.hasPermission("StrikePractice.staff")){
+                event.setCancelled(true);
+            }
+        }
+    }
+
+    @EventHandler
+    public void onCommandPreprocess(PlayerCommandPreprocessEvent event) {
+        Player player = event.getPlayer();
+        if(instance.isIneditroom.get(player.getUniqueId()) != null && instance.isIneditroom.get(player.getUniqueId()).equals(true)){
+            String used = event.getMessage().substring(1);
+            List<String> allowed = instance.getConfig().getStringList("access");
+            boolean isAllowed = false;
+            for (String command : allowed) {
+                StringBuilder current = new StringBuilder();
+                for (int i = 1; i <= used.split(" ").length; i++) {
+                    current.append(used.split(" ")[i - 1]).append(" ");
+                    if (command.toLowerCase().trim().equals(current.toString().toLowerCase().trim())) {
+                        isAllowed = true;
+                        break;
+                    }
+                }
+            }
+            if (!isAllowed) {
+                String message = HexColours.translate(instance.getConfig().getString("access-mess"));
+                event.getPlayer().sendMessage(message);
                 event.setCancelled(true);
             }
         }

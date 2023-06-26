@@ -1,11 +1,18 @@
 package dev.timury.customkit;
 
 import dev.timury.customkit.CMD.CustomKitCmd;
-import dev.timury.customkit.Gui.ListenerAnvil;
 import dev.timury.customkit.Listeners.Listeners;
+import dev.timury.customkit.util.HexColours;
+import dev.triumphteam.gui.guis.Gui;
+import dev.triumphteam.gui.guis.GuiItem;
+import ga.strikepractice.StrikePractice;
+import ga.strikepractice.api.StrikePracticeAPI;
 import lombok.Getter;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -19,6 +26,8 @@ public final class CustomKit extends JavaPlugin {
     @Getter
     private static CustomKit instance;
 
+    StrikePracticeAPI api = StrikePractice.getAPI();
+
     public static ArrayList<Player> isInvisible = new ArrayList<>();
 
     public final HashMap<UUID, Boolean> isIneditroom = new HashMap<>();
@@ -28,9 +37,9 @@ public final class CustomKit extends JavaPlugin {
         // Plugin startup logic
         getLogger().info("Plugin has been enabled");
         instance = this;
+        registerEvents();
         Bukkit.getPluginCommand("ck").setExecutor(new CustomKitCmd());
         saveDefaultConfig();
-        registerEvents();
     }
 
     @Override
@@ -42,7 +51,89 @@ public final class CustomKit extends JavaPlugin {
 
     public void registerEvents(){
         PluginManager pm = getServer().getPluginManager();
-        pm.registerEvents(new ListenerAnvil(), this);
         pm.registerEvents(new Listeners(), this);
+    }
+
+    public void GuiSettings (Player player){
+        ItemStack glass = new ItemStack(Material.BLACK_STAINED_GLASS_PANE);
+        ItemStack golden = new ItemStack(Material.GOLD_BLOCK);
+
+
+        ItemStack on_build = new ItemStack(Material.LIME_STAINED_GLASS_PANE);
+        ItemMeta on_build_meta = on_build.getItemMeta();
+        on_build_meta.setDisplayName(HexColours.translate("#ff9447Build:" + "#78ff85 ON"));
+        on_build.setItemMeta(on_build_meta);
+
+        ItemStack off_build = new ItemStack(Material.RED_STAINED_GLASS_PANE);
+        ItemMeta off_build_meta = off_build.getItemMeta();
+        off_build_meta.setDisplayName(HexColours.translate("#ff9447Build:" + "#ff4747 OFF"));
+        off_build.setItemMeta(off_build_meta);
+
+        ItemStack on_horse = new ItemStack(Material.LIME_STAINED_GLASS_PANE);
+        ItemMeta on_horse_meta = on_horse.getItemMeta();
+        on_horse_meta.setDisplayName(HexColours.translate("#ff9447Horse:" + "#78ff85 ON"));
+        on_horse.setItemMeta(on_horse_meta);
+
+        ItemStack off_horse = new ItemStack(Material.RED_STAINED_GLASS_PANE);
+        ItemMeta off_horse_meta = off_horse.getItemMeta();
+        off_horse_meta.setDisplayName(HexColours.translate("#ff9447Horse:" + "#78ff85 OFF"));
+        off_horse.setItemMeta(off_horse_meta);
+
+        Gui gui = new Gui(3, HexColours.translate("#00fa19CustomKit Settings"));
+
+        GuiItem glassgui = new GuiItem(glass, event -> {
+            event.setCancelled(true);
+        });
+
+        GuiItem apple = new GuiItem(golden, event -> {
+            event.setCancelled(true);
+            player.sendMessage("wrodks");
+            player.closeInventory();
+        });
+        GuiItem onbuild = new GuiItem(on_build, event -> {
+            event.setCancelled(true);
+            api.getPlayerKits(player).getCustomKit().setBuild(false);
+            player.sendMessage("wrodks");
+            gui.close(player);
+        });
+        GuiItem offbuild = new GuiItem(off_build, event -> {
+            event.setCancelled(true);
+            api.getPlayerKits(player).getCustomKit().setBuild(true);
+            player.sendMessage("wrodks");
+            gui.close(player);
+        });
+
+        GuiItem onhorse = new GuiItem(on_horse, event -> {
+            event.setCancelled(true);
+            api.getPlayerKits(player).getCustomKit().setHorse(false);
+            player.sendMessage("wrodks");
+            gui.close(player);
+        });
+
+        GuiItem offhorse = new GuiItem(off_horse, event -> {
+            event.setCancelled(true);
+            api.getPlayerKits(player).getCustomKit().setHorse(true);
+            player.sendMessage("wrodks");
+            gui.close(player);
+        });
+        gui.getFiller().fillBetweenPoints(0,0,8,18, glassgui);
+
+        if(api.getPlayerKits(player).getCustomKit().isBuild()){
+            gui.setItem(10, onbuild);
+        }else {
+            gui.setItem(10, offbuild);
+        }
+
+        if(api.getPlayerKits(player).getCustomKit().isHorse()){
+            gui.setItem(12, onhorse);
+        }else{
+            gui.setItem(12, offhorse);
+        }
+
+        gui.setItem(14, apple);
+        gui.setItem(16, apple);
+
+
+        gui.open(player);
     }
 }

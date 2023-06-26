@@ -4,3 +4,6 @@ main: dev.timury.customkit.CustomKit
 api-version: '1.17'
 depend: [ StrikePractice ]
 authors: [ Timury ]
+commands:
+  ck:
+    description: the StrikeExtraPlaceholders command

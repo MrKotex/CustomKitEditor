@@ -56,7 +56,9 @@ public final class CustomKit extends JavaPlugin {
 
     public void GuiSettings (Player player){
         ItemStack glass = new ItemStack(Material.BLACK_STAINED_GLASS_PANE);
-        ItemStack golden = new ItemStack(Material.GOLD_BLOCK);
+        ItemMeta glass_meta = glass.getItemMeta();
+        glass_meta.setDisplayName(HexColours.translate(" "));
+        glass.setItemMeta(glass_meta);
 
 
         ItemStack on_build = new ItemStack(Material.LIME_STAINED_GLASS_PANE);
@@ -76,7 +78,7 @@ public final class CustomKit extends JavaPlugin {
 
         ItemStack off_horse = new ItemStack(Material.RED_STAINED_GLASS_PANE);
         ItemMeta off_horse_meta = off_horse.getItemMeta();
-        off_horse_meta.setDisplayName(HexColours.translate("#ff9447Horse:" + "#78ff85 OFF"));
+        off_horse_meta.setDisplayName(HexColours.translate("#ff9447Horse:" + "#ff4747 OFF"));
         off_horse.setItemMeta(off_horse_meta);
 
         Gui gui = new Gui(3, HexColours.translate("#00fa19CustomKit Settings"));
@@ -85,53 +87,46 @@ public final class CustomKit extends JavaPlugin {
             event.setCancelled(true);
         });
 
-        GuiItem apple = new GuiItem(golden, event -> {
-            event.setCancelled(true);
-            player.sendMessage("wrodks");
-            player.closeInventory();
-        });
         GuiItem onbuild = new GuiItem(on_build, event -> {
             event.setCancelled(true);
             api.getPlayerKits(player).getCustomKit().setBuild(false);
-            player.sendMessage("wrodks");
+            player.sendMessage(HexColours.translate("#f53838Build was disabled!"));
             gui.close(player);
         });
         GuiItem offbuild = new GuiItem(off_build, event -> {
             event.setCancelled(true);
             api.getPlayerKits(player).getCustomKit().setBuild(true);
-            player.sendMessage("wrodks");
+            player.sendMessage(HexColours.translate("#f53838Build was enabled!"));
             gui.close(player);
         });
 
         GuiItem onhorse = new GuiItem(on_horse, event -> {
             event.setCancelled(true);
             api.getPlayerKits(player).getCustomKit().setHorse(false);
-            player.sendMessage("wrodks");
+            player.sendMessage("Horese mode was disabled!");
             gui.close(player);
         });
 
         GuiItem offhorse = new GuiItem(off_horse, event -> {
             event.setCancelled(true);
             api.getPlayerKits(player).getCustomKit().setHorse(true);
-            player.sendMessage("wrodks");
+            player.sendMessage("Horese mode was enabled!");
             gui.close(player);
         });
         gui.getFiller().fillBetweenPoints(0,0,8,18, glassgui);
 
         if(api.getPlayerKits(player).getCustomKit().isBuild()){
-            gui.setItem(10, onbuild);
+            gui.setItem(12, onbuild);
         }else {
-            gui.setItem(10, offbuild);
+            gui.setItem(12, offbuild);
         }
 
         if(api.getPlayerKits(player).getCustomKit().isHorse()){
-            gui.setItem(12, onhorse);
+            gui.setItem(14, onhorse);
         }else{
-            gui.setItem(12, offhorse);
+            gui.setItem(14, offhorse);
         }
 
-        gui.setItem(14, apple);
-        gui.setItem(16, apple);
 
 
         gui.open(player);

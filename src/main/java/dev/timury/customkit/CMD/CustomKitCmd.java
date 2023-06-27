@@ -43,13 +43,8 @@ public class CustomKitCmd implements CommandExecutor {
                     api.getPlayerKits(player).getCustomKit().setChestplate(player.getInventory().getChestplate());
                     api.getPlayerKits(player).getCustomKit().setLeggings(player.getInventory().getLeggings());
                     api.getPlayerKits(player).getCustomKit().setBoots(player.getInventory().getBoots());
-                    player.sendMessage(api.getPlayerKits(player).getCustomKit().getInventory().toString());
                     player.teleport(api.getSpawnLocation());
-                    Bukkit.dispatchCommand(player, "spawnitems give" + player.getName());
                     player.setGameMode(GameMode.SURVIVAL);
-                    File file = new File("plugins/StrikePractice/spawnitems.yml");
-                    YamlConfiguration yml = YamlConfiguration.loadConfiguration(file);
-                    player.sendMessage(yml.get("spawn-items").toString());
                     if (instance.isIneditroom.get(player.getUniqueId()) != null && instance.isIneditroom.get(player.getUniqueId()).equals(false)) {
                         return false;
                     }

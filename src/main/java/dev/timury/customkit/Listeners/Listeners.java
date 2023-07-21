@@ -2,6 +2,7 @@ package dev.timury.customkit.Listeners;
 
 import dev.timury.customkit.CustomKit;
 import dev.timury.customkit.util.HexColours;
+import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -23,6 +24,7 @@ public class Listeners implements Listener {
     public void onLeave(PlayerQuitEvent event){
         Player player = event.getPlayer();
         instance.isIneditroom.remove(player.getUniqueId());
+        player.setGameMode(GameMode.SURVIVAL);
     }
 
     @EventHandler

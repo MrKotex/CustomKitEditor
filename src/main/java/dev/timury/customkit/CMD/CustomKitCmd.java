@@ -8,19 +8,21 @@ import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
-public class CustomKitCmd implements CommandExecutor {
+public class CustomKitCmd implements CommandExecutor, TabCompleter {
 
     private final CustomKit instance = CustomKit.getInstance();
+
+    private static final String[] compl = { "edit", "save", "settings"};
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
@@ -55,6 +57,10 @@ public class CustomKitCmd implements CommandExecutor {
                         }
                     }
                     Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "spawnitem give " + player.getName());
+                    api.getPlayerKits(player).getCustomKit().saveForStrikePractice();
+                    api.getPlayerStats(player).save();
+                    api.getPlayerSettings(player).save();
+                    api.getPlayerKits(player).savePlayerKitsToFile();
                     instance.isIneditroom.remove(player.getUniqueId());
 
                 }
@@ -79,6 +85,8 @@ public class CustomKitCmd implements CommandExecutor {
                     player.teleport(Objects.requireNonNull(instance.getConfig().getLocation("custom-kit-room")));
                     api.loadPlayerKits(player.getUniqueId()).getCustomKit().giveKit(player);
                     player.setGameMode(GameMode.CREATIVE);
+                    player.setFlying(false);
+                    player.setAllowFlight(false);
                     for (Player players : Bukkit.getOnlinePlayers()) {
                         player.hidePlayer(players);
                     }
@@ -99,6 +107,21 @@ public class CustomKitCmd implements CommandExecutor {
             }
         }
         return true;
+    }
+
+    @Nullable
+    @Override
+    public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
+        final List<String> modules = new ArrayList<String>(Arrays.asList(compl));
+        Set<String> compl = new HashSet<>();
+        compl.add("edit");
+        compl.add("save");
+
+        StringUtil.copyPartialMatches(args[0], compl, modules);
+
+        Collections.sort(modules);
+
+        return modules;
     }
 }
 

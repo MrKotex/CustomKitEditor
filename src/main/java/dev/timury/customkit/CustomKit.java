@@ -103,14 +103,14 @@ public final class CustomKit extends JavaPlugin {
         GuiItem onhorse = new GuiItem(on_horse, event -> {
             event.setCancelled(true);
             api.getPlayerKits(player).getCustomKit().setHorse(false);
-            player.sendMessage("Horese mode was disabled!");
+            player.sendMessage(HexColours.translate("#f53838Horese mode was disabled!"));
             gui.close(player);
         });
 
         GuiItem offhorse = new GuiItem(off_horse, event -> {
             event.setCancelled(true);
             api.getPlayerKits(player).getCustomKit().setHorse(true);
-            player.sendMessage("Horese mode was enabled!");
+            player.sendMessage(HexColours.translate("#f53838Horese mode was enabled!"));
             gui.close(player);
         });
         gui.getFiller().fillBetweenPoints(0,0,8,18, glassgui);

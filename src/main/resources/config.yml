@@ -1,6 +1,6 @@
-custom-kit-room:
 access:
   - 'ck save'
   - 'ck settings'
+  - 'encha add'
 access-mess:
   - 'test'

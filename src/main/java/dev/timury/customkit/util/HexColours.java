@@ -20,7 +20,7 @@ public class HexColours {
         String packageName = Bukkit.getServer().getClass().getPackage().getName();
         String serverVersion = packageName.substring(packageName.lastIndexOf('.') + 1);
 
-        SUPPORTS_HEXCOLORS = Stream.of("1_7", "1_8", "1_9", "1_10", "1_11", "1_12", "1_13", "1_14", "1_15")
+        SUPPORTS_HEXCOLORS = Stream.of("1_7", "1_8", "1_9", "1_10", "1_11", "1_12", "1_13", "1_14", "1_15", "1_16", "1_17", "1_18", "1_19", "1_20")
                 .noneMatch(serverVersion::contains);
     }
 

@@ -83,20 +83,20 @@
         <dependency>
             <groupId>ga.strikepractice</groupId>
             <artifactId>StrikePractice</artifactId>
-            <version>3.8.1</version>
+            <version>3.9.0</version>
             <scope>system</scope>
-            <systemPath>${project.basedir}/libs/StrikePractice-dev-85853950987-1687473504.jar</systemPath>
+            <systemPath>${project.basedir}/libs/StrikePractice-dev-85853950987-1707053183.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>dev.triumphteam</groupId>
+            <artifactId>triumph-gui</artifactId>
+            <version>3.1.7</version>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>1.18.26</version>
             <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>dev.triumphteam</groupId>
-            <artifactId>triumph-gui</artifactId>
-            <version>3.1.5</version>
         </dependency>
     </dependencies>
 </project>

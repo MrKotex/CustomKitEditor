@@ -7,3 +7,5 @@ authors: [ Timury ]
 commands:
   ck:
     description: the StrikeExtraPlaceholders command
+  encha:
+    description: the StrikeExtraPlaceholders command

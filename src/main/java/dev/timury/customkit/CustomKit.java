@@ -1,6 +1,7 @@
 package dev.timury.customkit;
 
 import dev.timury.customkit.CMD.CustomKitCmd;
+import dev.timury.customkit.CMD.EnchantCmd;
 import dev.timury.customkit.Listeners.Listeners;
 import dev.timury.customkit.util.HexColours;
 import dev.triumphteam.gui.guis.Gui;
@@ -9,6 +10,7 @@ import ga.strikepractice.StrikePractice;
 import ga.strikepractice.api.StrikePracticeAPI;
 import lombok.Getter;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -32,6 +34,8 @@ public final class CustomKit extends JavaPlugin {
 
     public final HashMap<UUID, Boolean> isIneditroom = new HashMap<>();
 
+    public final HashMap<UUID, Boolean> hasHorse = new HashMap<>();
+
     @Override
     public void onEnable() {
         // Plugin startup logic
@@ -39,6 +43,7 @@ public final class CustomKit extends JavaPlugin {
         instance = this;
         registerEvents();
         Bukkit.getPluginCommand("ck").setExecutor(new CustomKitCmd());
+        Bukkit.getPluginCommand("encha").setExecutor(new EnchantCmd());
         saveDefaultConfig();
     }
 
@@ -53,6 +58,26 @@ public final class CustomKit extends JavaPlugin {
         PluginManager pm = getServer().getPluginManager();
         pm.registerEvents(new Listeners(), this);
     }
+
+    public Location editRoomLocation(){
+        String loc = api.getStrikePractice().getConfig().get("editing-place").toString();
+        String[] parts = loc.split(", ");
+        String worldName = parts[5]; // World name is at index 5
+        double x = Double.parseDouble(parts[0]);
+        double y = Double.parseDouble(parts[1]);
+        double z = Double.parseDouble(parts[2]);
+        float pitch = Float.parseFloat(parts[3]);
+        float yaw = Float.parseFloat(parts[4]);
+        return new Location(Bukkit.getWorld(worldName), x, y, z, pitch, yaw);
+    }
+
+    public String editRoomWorld(){
+        String loc = api.getStrikePractice().getConfig().get("editing-place").toString();
+        String[] parts = loc.split(", ");
+        return parts[5];
+    }
+
+
 
     public void GuiSettings (Player player){
         ItemStack glass = new ItemStack(Material.BLACK_STAINED_GLASS_PANE);

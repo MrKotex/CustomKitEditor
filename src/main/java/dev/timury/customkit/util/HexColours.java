@@ -12,17 +12,12 @@ import java.util.stream.Stream;
 
 @UtilityClass
 public class HexColours {
-    private static final boolean SUPPORTS_HEXCOLORS;
 
     private static final Pattern HEX_PATTERN = Pattern.compile("#[a-fA-F\\d]{6}");
 
-    static {
-        String packageName = Bukkit.getServer().getClass().getPackage().getName();
-        String serverVersion = packageName.substring(packageName.lastIndexOf('.') + 1);
-
-        SUPPORTS_HEXCOLORS = Stream.of("1_7", "1_8", "1_9", "1_10", "1_11", "1_12", "1_13", "1_14", "1_15", "1_16", "1_17", "1_18", "1_19", "1_20")
-                .noneMatch(serverVersion::contains);
-    }
+    private static final String VERSION = Bukkit.getServer().getClass().getPackage().getName().substring(24);
+    private static final int INT_VER = Integer.parseInt(VERSION.split("_")[1]);
+    private static final boolean SUPPORTS_HEXCOLORS = INT_VER > 15;
 
     public static final String BLACK = ChatColor.BLACK.toString(); // 0
     public static final String D_BLUE = ChatColor.DARK_BLUE.toString(); // 1

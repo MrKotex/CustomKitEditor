@@ -2,9 +2,10 @@ access:
   - 'ck save'
   - 'ck settings'
   - 'ench add'
+  - 'ench remove'
 access-mess:
-  - 'test'
+  - 'you cannot do it now!'
 save-mess:
-  - ''
+  - 'done'
 edit-mess:
-  - 'teraz mozesz edytowac custom kit'
+  - 'edit now'

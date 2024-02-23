@@ -115,12 +115,16 @@ public final class CustomKit extends JavaPlugin {
         GuiItem onbuild = new GuiItem(on_build, event -> {
             event.setCancelled(true);
             api.getPlayerKits(player).getCustomKit().setBuild(false);
+            api.getPlayerKits(player).getCustomKit().saveForStrikePractice();
+            api.getPlayerKits(player).savePlayerKitsToFile();
             player.sendMessage(HexColours.translate("#f53838Build was disabled!"));
             gui.close(player);
         });
         GuiItem offbuild = new GuiItem(off_build, event -> {
             event.setCancelled(true);
             api.getPlayerKits(player).getCustomKit().setBuild(true);
+            api.getPlayerKits(player).getCustomKit().saveForStrikePractice();
+            api.getPlayerKits(player).savePlayerKitsToFile();
             player.sendMessage(HexColours.translate("#f53838Build was enabled!"));
             gui.close(player);
         });

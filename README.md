@@ -20,6 +20,6 @@ Permissions:
 
 ## Authors
 
-- [@MrKotex](https://www.github.com/MrKotex)
-- With help of - [@iiAhmedYT](https://github.com/iiAhmedYT)
+- [MrKotex](https://www.github.com/MrKotex)
+- With the help of my friend - [iiAhmedYT](https://github.com/iiAhmedYT)
 

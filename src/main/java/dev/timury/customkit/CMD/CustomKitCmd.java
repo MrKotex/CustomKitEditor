@@ -1,6 +1,7 @@
 package dev.timury.customkit.CMD;
 
 import dev.timury.customkit.CustomKit;
+import dev.timury.customkit.util.HexColours;
 import ga.strikepractice.StrikePractice;
 import ga.strikepractice.api.StrikePracticeAPI;
 import org.bukkit.*;
@@ -70,10 +71,10 @@ public class CustomKitCmd implements CommandExecutor, TabCompleter {
                         }
                         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "spawnitem give " + player.getName());
                         api.getPlayerKits(player).getCustomKit().saveForStrikePractice();
-                        api.getPlayerStats(player).save();
-                        api.getPlayerSettings(player).save();
                         api.getPlayerKits(player).savePlayerKitsToFile();
                         instance.isIneditroom.remove(player.getUniqueId());
+                        String message = HexColours.translate(Objects.requireNonNull(instance.getConfig().getString("save-mess")).replace("[", "").replace("]", ""));
+                        player.sendMessage(message);
                     }
                 }
                 if (args[0].equalsIgnoreCase("get")) {
@@ -82,9 +83,6 @@ public class CustomKitCmd implements CommandExecutor, TabCompleter {
                     }
                 }
                 if (args[0].equalsIgnoreCase("edit")) {
-                    if(api.isInFight(player) || api.isInQueue(player)){
-                        return false;
-                    }else{
                         if (instance.isIneditroom.containsKey(player.getUniqueId())) {
                             player.sendMessage(ChatColor.RED + "You are already in Custom Kit Editor");
                             return false;
@@ -94,23 +92,36 @@ public class CustomKitCmd implements CommandExecutor, TabCompleter {
                         } else if (api.isSpectator(player)) {
                             player.sendMessage(ChatColor.RED + "You have to left the spectator mode to edit customKit");
                             return false;
+                        }else{
+                            instance.isIneditroom.put(player.getUniqueId(), true);
+                            player.sendMessage(HexColours.translate(Objects.requireNonNull(instance.getConfig().getString("edit-mess")).replace("[", "").replace("]", "")));
+                            CustomKit.isInvisible.add(player);
+                            player.teleport(instance.editRoomLocation());
+                            if(api.loadPlayerKits(player.getUniqueId()).getCustomKit().isHorse()){
+                                instance.hasHorse.put(player.getUniqueId(), true);
+                                api.getPlayerKits(player).getCustomKit().setHorse(false);
+                                api.getPlayerKits(player).getCustomKit().saveForStrikePractice();
+                                api.getPlayerKits(player).savePlayerKitsToFile();
+                                api.loadPlayerKits(player.getUniqueId()).getCustomKit().giveKit(player);
+
+                                api.getPlayerKits(player).getCustomKit().setHorse(true);
+                                api.getPlayerKits(player).getCustomKit().saveForStrikePractice();
+                                api.getPlayerKits(player).savePlayerKitsToFile();
+
+                            }else {
+                                instance.hasHorse.put(player.getUniqueId(), false);
+                                api.loadPlayerKits(player.getUniqueId()).getCustomKit().giveKit(player);
+                            }
+                            player.setGameMode(GameMode.CREATIVE);
+                            player.setFlying(false);
+                            player.setAllowFlight(false);
+
+                            for (Player players : Bukkit.getOnlinePlayers()) {
+                                player.hidePlayer(players);
+                            }
                         }
-                        instance.isIneditroom.put(player.getUniqueId(), true);
-                        CustomKit.isInvisible.add(player);
-                        player.teleport(instance.editRoomLocation());
-                        api.loadPlayerKits(player.getUniqueId()).getCustomKit().giveKit(player);
-                        if(api.loadPlayerKits(player.getUniqueId()).getCustomKit().isHorse()){
-                            instance.hasHorse.put(player.getUniqueId(), true);
-                        }else {
-                            instance.hasHorse.put(player.getUniqueId(), false);
                         }
-                        player.setGameMode(GameMode.CREATIVE);
-                        player.setFlying(false);
-                        player.setAllowFlight(false);
-                        for (Player players : Bukkit.getOnlinePlayers()) {
-                            player.hidePlayer(players);
-                        }
-                    }
+
                 }
                 if (args[0].equalsIgnoreCase("settings")) {
                     if (sender.hasPermission("CKA.customkit")) {
@@ -120,7 +131,6 @@ public class CustomKitCmd implements CommandExecutor, TabCompleter {
                     }
                 }
             }
-        }
         return true;
     }
 

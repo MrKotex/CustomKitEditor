@@ -6,6 +6,8 @@ depend: [ StrikePractice ]
 authors: [ Timury ]
 commands:
   ck:
-    description: the StrikeExtraPlaceholders command
+    description: the StrikeCustomGamemode command
+    permission: CKA.customkit
   encha:
-    description: the StrikeExtraPlaceholders command
+    description: the StrikeCustomGamemode command
+    permission: CKA.customkit

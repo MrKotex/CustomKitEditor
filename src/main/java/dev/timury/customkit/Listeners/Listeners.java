@@ -3,8 +3,6 @@ package dev.timury.customkit.Listeners;
 import dev.timury.customkit.CustomKit;
 import dev.timury.customkit.util.HexColours;
 import org.bukkit.GameMode;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Horse;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -30,14 +28,6 @@ public class Listeners implements Listener {
     }
 
     @EventHandler
-    public void HorseDrop(EntityDeathEvent event) {
-        Entity entity = event.getEntity();
-        if (entity instanceof Horse) {
-            event.getDrops().clear();
-        }
-    }
-
-    @EventHandler
     public void DropItems(PlayerDropItemEvent event){
         Player player = event.getPlayer();
         if(instance.isIneditroom.get(player.getUniqueId()) != null && instance.isIneditroom.get(player.getUniqueId()).equals(true) || player.getWorld().getName().equals("world")){
@@ -55,7 +45,7 @@ public class Listeners implements Listener {
     @EventHandler
     public void PlaceBlock(BlockPlaceEvent event){
         Player player = event.getPlayer();
-        if(player.getWorld().getName().equals(instance.editRoomWorld())){
+        if(player.getWorld().getName().equals(instance.editRoomWorld()) || instance.isIneditroom.containsKey(player.getUniqueId())){
             if(!player.hasPermission("StrikePractice.staff")){
                 event.setCancelled(true);
             }
@@ -98,7 +88,7 @@ public class Listeners implements Listener {
                 }
             }
             if (!isAllowed) {
-                String message = HexColours.translate(instance.getConfig().getString("access-mess"));
+                String message = HexColours.translate(instance.getConfig().getString("access-mess").replace("[", "").replace("]", ""));
                 event.getPlayer().sendMessage(message);
                 event.setCancelled(true);
             }

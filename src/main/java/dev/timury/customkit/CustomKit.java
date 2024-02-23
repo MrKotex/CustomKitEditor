@@ -128,6 +128,8 @@ public final class CustomKit extends JavaPlugin {
         GuiItem onhorse = new GuiItem(on_horse, event -> {
             event.setCancelled(true);
             api.getPlayerKits(player).getCustomKit().setHorse(false);
+            api.getPlayerKits(player).getCustomKit().saveForStrikePractice();
+            api.getPlayerKits(player).savePlayerKitsToFile();
             player.sendMessage(HexColours.translate("#f53838Horese mode was disabled!"));
             gui.close(player);
         });
@@ -135,6 +137,8 @@ public final class CustomKit extends JavaPlugin {
         GuiItem offhorse = new GuiItem(off_horse, event -> {
             event.setCancelled(true);
             api.getPlayerKits(player).getCustomKit().setHorse(true);
+            api.getPlayerKits(player).getCustomKit().saveForStrikePractice();
+            api.getPlayerKits(player).savePlayerKitsToFile();
             player.sendMessage(HexColours.translate("#f53838Horese mode was enabled!"));
             gui.close(player);
         });

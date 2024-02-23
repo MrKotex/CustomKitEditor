@@ -16,7 +16,8 @@ Permissions:
 - **CKA.customkit**
 - and default SP's permissions
 
-
+## Note
+It was tested on 1.17.1 so if something doesn't work on other versions, let me know
 
 ## Authors
 

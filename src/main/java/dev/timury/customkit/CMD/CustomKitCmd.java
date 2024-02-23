@@ -4,6 +4,7 @@ import dev.timury.customkit.CustomKit;
 import dev.timury.customkit.util.HexColours;
 import ga.strikepractice.StrikePractice;
 import ga.strikepractice.api.StrikePracticeAPI;
+import ga.strikepractice.playerkits.PlayerKits;
 import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -25,11 +26,14 @@ public class CustomKitCmd implements CommandExecutor, TabCompleter {
 
     private static final String[] compl = { "edit", "save", "settings"};
 
+
+
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         Player player = (Player) sender;
         if(sender.hasPermission("CKA.customkit")) {
             StrikePracticeAPI api = StrikePractice.getAPI();
+            PlayerKits playerCustomKit = api.getPlayerKits(player);
             if (args.length == 1) {
                 if (args[0].equalsIgnoreCase("save")) {
                     if(instance.isIneditroom.get(player.getUniqueId()) != null && instance.isIneditroom.get(player.getUniqueId()).equals(true)) {
@@ -41,11 +45,11 @@ public class CustomKitCmd implements CommandExecutor, TabCompleter {
                                 inventoryItems1.add(new ItemStack(Material.AIR));
                             }
                         }
-                        api.getPlayerKits(player).getCustomKit().setInventory(inventoryItems1);
-                        api.getPlayerKits(player).getCustomKit().setHelmet(player.getInventory().getHelmet());
-                        api.getPlayerKits(player).getCustomKit().setChestplate(player.getInventory().getChestplate());
-                        api.getPlayerKits(player).getCustomKit().setLeggings(player.getInventory().getLeggings());
-                        api.getPlayerKits(player).getCustomKit().setBoots(player.getInventory().getBoots());
+                        playerCustomKit.getCustomKit().setInventory(inventoryItems1);
+                        playerCustomKit.getCustomKit().setHelmet(player.getInventory().getHelmet());
+                        playerCustomKit.getCustomKit().setChestplate(player.getInventory().getChestplate());
+                        playerCustomKit.getCustomKit().setLeggings(player.getInventory().getLeggings());
+                        playerCustomKit.getCustomKit().setBoots(player.getInventory().getBoots());
                         player.teleport(api.getSpawnLocation());
                         player.setGameMode(GameMode.SURVIVAL);
                         if (instance.hasHorse.get(player.getUniqueId()) != null && instance.hasHorse.get(player.getUniqueId()).equals(true)) {
@@ -70,8 +74,8 @@ public class CustomKitCmd implements CommandExecutor, TabCompleter {
                             }
                         }
                         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "spawnitem give " + player.getName());
-                        api.getPlayerKits(player).getCustomKit().saveForStrikePractice();
-                        api.getPlayerKits(player).savePlayerKitsToFile();
+                        playerCustomKit.getCustomKit().saveForStrikePractice();
+                        playerCustomKit.savePlayerKitsToFile();
                         instance.isIneditroom.remove(player.getUniqueId());
                         String message = HexColours.translate(Objects.requireNonNull(instance.getConfig().getString("save-mess")).replace("[", "").replace("]", ""));
                         player.sendMessage(message);
@@ -99,14 +103,14 @@ public class CustomKitCmd implements CommandExecutor, TabCompleter {
                             player.teleport(instance.editRoomLocation());
                             if(api.loadPlayerKits(player.getUniqueId()).getCustomKit().isHorse()){
                                 instance.hasHorse.put(player.getUniqueId(), true);
-                                api.getPlayerKits(player).getCustomKit().setHorse(false);
-                                api.getPlayerKits(player).getCustomKit().saveForStrikePractice();
-                                api.getPlayerKits(player).savePlayerKitsToFile();
+                                playerCustomKit.getCustomKit().setHorse(false);
+                                playerCustomKit.getCustomKit().saveForStrikePractice();
+                                playerCustomKit.savePlayerKitsToFile();
                                 api.loadPlayerKits(player.getUniqueId()).getCustomKit().giveKit(player);
 
-                                api.getPlayerKits(player).getCustomKit().setHorse(true);
-                                api.getPlayerKits(player).getCustomKit().saveForStrikePractice();
-                                api.getPlayerKits(player).savePlayerKitsToFile();
+                                playerCustomKit.getCustomKit().setHorse(true);
+                                playerCustomKit.getCustomKit().saveForStrikePractice();
+                                playerCustomKit.savePlayerKitsToFile();
 
                             }else {
                                 instance.hasHorse.put(player.getUniqueId(), false);

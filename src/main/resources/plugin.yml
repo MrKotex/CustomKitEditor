@@ -8,6 +8,6 @@ commands:
   ck:
     description: the StrikeCustomGamemode command
     permission: CKA.customkit
-  encha:
+  ench:
     description: the StrikeCustomGamemode command
     permission: CKA.customkit

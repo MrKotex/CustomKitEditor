@@ -43,7 +43,7 @@ public final class CustomKit extends JavaPlugin {
         instance = this;
         registerEvents();
         Bukkit.getPluginCommand("ck").setExecutor(new CustomKitCmd());
-        Bukkit.getPluginCommand("encha").setExecutor(new EnchantCmd());
+        Bukkit.getPluginCommand("ench").setExecutor(new EnchantCmd());
         saveDefaultConfig();
     }
 

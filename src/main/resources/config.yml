@@ -1,10 +1,10 @@
 access:
   - 'ck save'
   - 'ck settings'
-  - 'encha add'
+  - 'ench add'
 access-mess:
   - 'test'
 save-mess:
-  - 'pomyslnie zapisano zmiany'
+  - ''
 edit-mess:
   - 'teraz mozesz edytowac custom kit'

@@ -115,7 +115,6 @@ public final class CustomKit extends JavaPlugin {
         GuiItem onbuild = new GuiItem(on_build, event -> {
             event.setCancelled(true);
             api.getPlayerKits(player).getCustomKit().setBuild(false);
-            api.getPlayerKits(player).getCustomKit().saveForStrikePractice();
             api.getPlayerKits(player).savePlayerKitsToFile();
             player.sendMessage(HexColours.translate("#f53838Build was disabled!"));
             gui.close(player);
@@ -123,16 +122,14 @@ public final class CustomKit extends JavaPlugin {
         GuiItem offbuild = new GuiItem(off_build, event -> {
             event.setCancelled(true);
             api.getPlayerKits(player).getCustomKit().setBuild(true);
-            api.getPlayerKits(player).getCustomKit().saveForStrikePractice();
             api.getPlayerKits(player).savePlayerKitsToFile();
-            player.sendMessage(HexColours.translate("#f53838Build was enabled!"));
+            player.sendMessage(HexColours.translate("#78ff85Build was enabled!"));
             gui.close(player);
         });
 
         GuiItem onhorse = new GuiItem(on_horse, event -> {
             event.setCancelled(true);
             api.getPlayerKits(player).getCustomKit().setHorse(false);
-            api.getPlayerKits(player).getCustomKit().saveForStrikePractice();
             api.getPlayerKits(player).savePlayerKitsToFile();
             player.sendMessage(HexColours.translate("#f53838Horese mode was disabled!"));
             gui.close(player);
@@ -141,9 +138,8 @@ public final class CustomKit extends JavaPlugin {
         GuiItem offhorse = new GuiItem(off_horse, event -> {
             event.setCancelled(true);
             api.getPlayerKits(player).getCustomKit().setHorse(true);
-            api.getPlayerKits(player).getCustomKit().saveForStrikePractice();
             api.getPlayerKits(player).savePlayerKitsToFile();
-            player.sendMessage(HexColours.translate("#f53838Horese mode was enabled!"));
+            player.sendMessage(HexColours.translate("#78ff85Horese mode was enabled!"));
             gui.close(player);
         });
         gui.getFiller().fillBetweenPoints(0,0,8,18, glassgui);

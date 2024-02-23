@@ -74,7 +74,6 @@ public class CustomKitCmd implements CommandExecutor, TabCompleter {
                             }
                         }
                         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "spawnitem give " + player.getName());
-                        playerCustomKit.getCustomKit().saveForStrikePractice();
                         playerCustomKit.savePlayerKitsToFile();
                         instance.isIneditroom.remove(player.getUniqueId());
                         String message = HexColours.translate(Objects.requireNonNull(instance.getConfig().getString("save-mess")).replace("[", "").replace("]", ""));
@@ -104,12 +103,10 @@ public class CustomKitCmd implements CommandExecutor, TabCompleter {
                             if(api.loadPlayerKits(player.getUniqueId()).getCustomKit().isHorse()){
                                 instance.hasHorse.put(player.getUniqueId(), true);
                                 playerCustomKit.getCustomKit().setHorse(false);
-                                playerCustomKit.getCustomKit().saveForStrikePractice();
                                 playerCustomKit.savePlayerKitsToFile();
                                 api.loadPlayerKits(player.getUniqueId()).getCustomKit().giveKit(player);
 
                                 playerCustomKit.getCustomKit().setHorse(true);
-                                playerCustomKit.getCustomKit().saveForStrikePractice();
                                 playerCustomKit.savePlayerKitsToFile();
 
                             }else {

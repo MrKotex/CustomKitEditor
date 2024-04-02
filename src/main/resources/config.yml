@@ -9,3 +9,4 @@ save-mess:
   - 'done'
 edit-mess:
   - 'edit now'
+editing-place: 0, 100.0, 0, 0, 90, world

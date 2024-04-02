@@ -52,17 +52,6 @@ public class CustomKitCmd implements CommandExecutor, TabCompleter {
                         playerCustomKit.getCustomKit().setBoots(player.getInventory().getBoots());
                         player.teleport(api.getSpawnLocation());
                         player.setGameMode(GameMode.SURVIVAL);
-                        if (instance.hasHorse.get(player.getUniqueId()) != null && instance.hasHorse.get(player.getUniqueId()).equals(true)) {
-                            for (Entity entity : Bukkit.getWorld(instance.editRoomWorld()).getEntities()) {
-                                if (entity instanceof Horse) {
-                                    Horse horse = (Horse) entity;
-                                    if (horse.getOwner() instanceof Player && horse.getOwner().equals(player)) {
-                                        horse.setHealth(0);
-                                        instance.hasHorse.remove(player.getUniqueId());
-                                    }
-                                }
-                            }
-                        }
 
                         if (instance.isIneditroom.get(player.getUniqueId()) != null && instance.isIneditroom.get(player.getUniqueId()).equals(false)) {
                             return false;
@@ -122,8 +111,6 @@ public class CustomKitCmd implements CommandExecutor, TabCompleter {
                             }
                         }
                         }
-
-                }
                 if (args[0].equalsIgnoreCase("settings")) {
                     if (sender.hasPermission("CKA.customkit")) {
                         if(instance.isIneditroom.get(player.getUniqueId()) != null && instance.isIneditroom.get(player.getUniqueId()).equals(true)){
@@ -131,8 +118,11 @@ public class CustomKitCmd implements CommandExecutor, TabCompleter {
                         }
                     }
                 }
+                }else {
+                player.sendMessage("Usage: /ck [save/edit/settings]");
             }
-        return true;
+            }
+        return false;
     }
 
     @Nullable

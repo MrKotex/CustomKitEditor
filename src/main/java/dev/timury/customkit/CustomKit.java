@@ -60,21 +60,40 @@ public final class CustomKit extends JavaPlugin {
     }
 
     public Location editRoomLocation(){
-        String loc = api.getStrikePractice().getConfig().get("editing-place").toString();
-        String[] parts = loc.split(", ");
-        String worldName = parts[5]; // World name is at index 5
-        double x = Double.parseDouble(parts[0]);
-        double y = Double.parseDouble(parts[1]);
-        double z = Double.parseDouble(parts[2]);
-        float pitch = Float.parseFloat(parts[3]);
-        float yaw = Float.parseFloat(parts[4]);
-        return new Location(Bukkit.getWorld(worldName), x, y, z, pitch, yaw);
+        String editingPlace = (String) api.getStrikePractice().getConfig().get("editing-place");
+        if(editingPlace == null || editingPlace.isEmpty()){
+            String configLoc = instance.getConfig().getString("editing-place");
+            String[] parts = configLoc.split(", ");
+            String worldName = parts[5]; // World name is at index 5
+            double x = Double.parseDouble(parts[0]);
+            double y = Double.parseDouble(parts[1]);
+            double z = Double.parseDouble(parts[2]);
+            float pitch = Float.parseFloat(parts[3]);
+            float yaw = Float.parseFloat(parts[4]);
+            return new Location(Bukkit.getWorld(worldName), x, y, z, pitch, yaw);
+        } else {
+            String[] parts = api.getStrikePractice().getConfig().get("editing-place").toString().split(", ");
+            String worldName = parts[5]; // World name is at index 5
+            double x = Double.parseDouble(parts[0]);
+            double y = Double.parseDouble(parts[1]);
+            double z = Double.parseDouble(parts[2]);
+            float pitch = Float.parseFloat(parts[3]);
+            float yaw = Float.parseFloat(parts[4]);
+            return new Location(Bukkit.getWorld(worldName), x, y, z, pitch, yaw);
+        }
     }
 
     public String editRoomWorld(){
-        String loc = api.getStrikePractice().getConfig().get("editing-place").toString();
-        String[] parts = loc.split(", ");
-        return parts[5];
+        String editingPlace = (String) api.getStrikePractice().getConfig().get("editing-place");
+        if(editingPlace == null || editingPlace.isEmpty()){
+            String configLoc = instance.getConfig().getString("editing-place");
+            String[] parts = configLoc.split(", ");
+            return parts[5];
+        }else {
+
+            String[] parts = editingPlace.split(", ");
+            return parts[5];
+        }
     }
 
 

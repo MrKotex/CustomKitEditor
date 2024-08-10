@@ -10,3 +10,23 @@ save-mess:
 edit-mess:
   - 'edit now'
 editing-place: 0, 100.0, 0, 0, 90, world
+isSpectator:
+  - 'You have to leave the spectator mode to edit customKit'
+isInQueue:
+  - 'You have to leave the queue to edit customKit'
+isIneditroom:
+  - 'You are already in the Custom Kit Editor'
+enchantment-added:
+  - '#78ff85<enchantment> has been added'
+enchantment-removed:
+  - '#78ff85<enchantment> has been removed'
+enchantment-cannot-be-added:
+  - '#ff4747<enchantment> has not been added'
+enchantment-too-big-or-small-or-cannot-be-added-on-this-item:
+  - '#ff4747<enchantment> cannot be applied for this item OR the level of the enchantment is too big'
+enchantment-missing-level:
+  - '#ff4747Enchantment level is missing'
+enchantment-invalid:
+  - '#ff4747Invalid enchantment level'
+banned-items:
+  -

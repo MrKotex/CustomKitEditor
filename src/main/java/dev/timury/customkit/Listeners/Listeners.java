@@ -3,22 +3,27 @@ package dev.timury.customkit.Listeners;
 import dev.timury.customkit.CustomKit;
 import dev.timury.customkit.util.HexColours;
 import org.bukkit.GameMode;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.*;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
+//TODO disable operator items
 import java.util.List;
 
 public class Listeners implements Listener {
 
-    private final CustomKit instance = CustomKit.getInstance();
+    private final CustomKit instance = CustomKit.instance;
 
     @EventHandler
     public void onLeave(PlayerQuitEvent event){
@@ -34,6 +39,34 @@ public class Listeners implements Listener {
             event.setCancelled(true);
         }
     }
+
+    public static void listMonsterEggs() {
+        for (Material material : Material.values()) {
+            if (material.name().endsWith("_SPAWN_EGG")) {
+                System.out.println(material.name());
+            }
+        }
+    }
+
+    @EventHandler
+    public void itemuse(PlayerInteractEvent e) {
+        if (instance.isIneditroom.get(e.getPlayer().getUniqueId()) != null && instance.isIneditroom.get(e.getPlayer().getUniqueId()).equals(true) || e.getPlayer().getWorld().getName().equals("world")){
+            Material itemType = e.getItem() != null ? e.getItem().getType() : null;
+            if (e.getAction() == Action.RIGHT_CLICK_BLOCK && itemType.name().endsWith("_SPAWN_EGG")) {
+                e.setCancelled(true);
+            }
+            if (e.getAction() == Action.RIGHT_CLICK_BLOCK || e.getAction() == Action.LEFT_CLICK_BLOCK) {
+                Block clickedBlock = e.getClickedBlock();
+                // Check if the clicked block is not null and if it is an anvil
+                if (clickedBlock != null && (clickedBlock.getType() == Material.ANVIL || clickedBlock.getType() == Material.CHIPPED_ANVIL || clickedBlock.getType() == Material.DAMAGED_ANVIL)) {
+                    if(e.getPlayer().hasPermission("CKA.customkit")){
+                        e.getPlayer().performCommand("ck save");
+                    }
+                }
+            }
+        }
+    }
+
     @EventHandler
     public void onCraft(CraftItemEvent event){
         Player player = (Player) event.getWhoClicked();

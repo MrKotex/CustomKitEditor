@@ -18,7 +18,7 @@ import java.util.*;
 
 public class EnchantCmd implements CommandExecutor, TabCompleter {
 
-    private final CustomKit instance = CustomKit.getInstance();
+    private final CustomKit instance = CustomKit.instance;
 
 
     @Override
@@ -39,18 +39,18 @@ public class EnchantCmd implements CommandExecutor, TabCompleter {
 
                                 if (itemInUse != null && enchantment.canEnchantItem(itemInUse)) {
                                     itemInUse.addEnchantment(enchantment, enchantmentLvl);
-                                    player.sendMessage(HexColours.translate("#78ff85" + args[1] + " has been added"));
+                                    player.sendMessage(HexColours.translate(Objects.requireNonNull(Objects.requireNonNull(instance.getConfig().getString("enchantment-added")).replace("<enchantment>", args[1]).replace("[", "").replace("]", ""))));
                                 } else {
-                                    player.sendMessage(HexColours.translate("#ff4747" + args[1] + " hasn't been added"));
+                                    player.sendMessage(HexColours.translate(Objects.requireNonNull(Objects.requireNonNull(instance.getConfig().getString("enchantment-cannot-be-added")).replace("<enchantment>", args[1]).replace("[", "").replace("]", ""))));
                                 }
                             } else {
-                                player.sendMessage(HexColours.translate("#ff4747" + args[1] + " cannot be applied for this item OR the level of the enchantment is too big"));
+                                player.sendMessage(HexColours.translate(Objects.requireNonNull(Objects.requireNonNull(instance.getConfig().getString("enchantment-too-big-or-small-or-cannot-be-added-on-this-item")).replace("<enchantment>", args[1]).replace("[", "").replace("]", ""))));
                             }
                         } else {
-                            player.sendMessage(HexColours.translate("#ff4747Enchantment level is missing"));
+                            player.sendMessage(HexColours.translate(Objects.requireNonNull(Objects.requireNonNull(instance.getConfig().getString("enchantment-missing-level")).replace("<enchantment>", args[1]).replace("[", "").replace("]", ""))));
                         }
                     } catch (NumberFormatException e) {
-                        player.sendMessage(HexColours.translate("#ff4747Invalid enchantment level"));
+                        player.sendMessage(HexColours.translate(Objects.requireNonNull(Objects.requireNonNull(instance.getConfig().getString("enchantment-invalid")).replace("<enchantment>", args[1]).replace("[", "").replace("]", ""))));
                     }
                 }
                 if (args.length >= 1 && args[0].equalsIgnoreCase("remove")) {
@@ -59,7 +59,7 @@ public class EnchantCmd implements CommandExecutor, TabCompleter {
                         ItemStack itemInUse = player.getItemInHand();
                         if (itemInUse != null && enchantment.canEnchantItem(itemInUse)) {
                             itemInUse.removeEnchantment(enchantment);
-                            player.sendMessage(HexColours.translate("#78ff85"+ args[1] +" has been removed"));
+                            player.sendMessage(HexColours.translate(HexColours.translate(Objects.requireNonNull(Objects.requireNonNull(instance.getConfig().getString("enchantment-removed")).replace("<enchantment>", args[1]).replace("[", "").replace("]", "")))));
                         }
                     }
                 }
@@ -118,6 +118,7 @@ public class EnchantCmd implements CommandExecutor, TabCompleter {
     public static XEnchantment matchXEnchantment(String enchantmentName) {
         return XEnchantment.matchXEnchantment(enchantmentName).orElse(null);
     }
+
 }
 
 

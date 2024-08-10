@@ -6,8 +6,8 @@ depend: [ StrikePractice ]
 authors: [ Timury ]
 commands:
   ck:
-    description: the StrikeCustomGamemode command
+    description: the StrikeCustom Gamemode command
     permission: CKA.customkit
   ench:
-    description: the StrikeCustomGamemode command
+    description: the StrikeCustom Gamemode command
     permission: CKA.customkit

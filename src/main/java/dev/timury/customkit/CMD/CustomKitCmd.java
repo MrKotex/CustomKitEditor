@@ -10,8 +10,6 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Horse;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.StringUtil;
@@ -22,7 +20,7 @@ import java.util.*;
 
 public class CustomKitCmd implements CommandExecutor, TabCompleter {
 
-    private final CustomKit instance = CustomKit.getInstance();
+    private final CustomKit instance = CustomKit.instance;
 
     private static final String[] compl = { "edit", "save", "settings"};
 
@@ -76,13 +74,13 @@ public class CustomKitCmd implements CommandExecutor, TabCompleter {
                 }
                 if (args[0].equalsIgnoreCase("edit")) {
                         if (instance.isIneditroom.containsKey(player.getUniqueId())) {
-                            player.sendMessage(ChatColor.RED + "You are already in Custom Kit Editor");
+                            player.sendMessage(HexColours.translate(Objects.requireNonNull(instance.getConfig().getString("isIneditroom").replace("[", "").replace("]", ""))));
                             return false;
                         } else if (api.isInQueue(player)) {
-                            player.sendMessage(ChatColor.RED + "You have to left the queue to edit customKit");
+                            player.sendMessage(HexColours.translate(Objects.requireNonNull(instance.getConfig().getString("isInQueue").replace("[", "").replace("]", ""))));
                             return false;
                         } else if (api.isSpectator(player)) {
-                            player.sendMessage(ChatColor.RED + "You have to left the spectator mode to edit customKit");
+                            player.sendMessage(HexColours.translate(Objects.requireNonNull(instance.getConfig().getString("isSpectator").replace("[", "").replace("]", ""))));
                             return false;
                         }else{
                             instance.isIneditroom.put(player.getUniqueId(), true);

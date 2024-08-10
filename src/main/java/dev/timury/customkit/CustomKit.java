@@ -26,7 +26,7 @@ import java.util.UUID;
 public final class CustomKit extends JavaPlugin {
 
     @Getter
-    private static CustomKit instance;
+    public static CustomKit instance;
 
     StrikePracticeAPI api = StrikePractice.getAPI();
 
@@ -58,6 +58,7 @@ public final class CustomKit extends JavaPlugin {
         PluginManager pm = getServer().getPluginManager();
         pm.registerEvents(new Listeners(), this);
     }
+
 
     public Location editRoomLocation(){
         String editingPlace = (String) api.getStrikePractice().getConfig().get("editing-place");

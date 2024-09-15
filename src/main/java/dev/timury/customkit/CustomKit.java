@@ -1,8 +1,8 @@
 package dev.timury.customkit;
 
-import dev.timury.customkit.CMD.CustomKitCmd;
-import dev.timury.customkit.CMD.EnchantCmd;
-import dev.timury.customkit.Listeners.Listeners;
+import dev.timury.customkit.commands.CustomKitCmd;
+import dev.timury.customkit.commands.EnchantCmd;
+import dev.timury.customkit.listeners.Listeners;
 import dev.timury.customkit.util.HexColours;
 import dev.triumphteam.gui.guis.Gui;
 import dev.triumphteam.gui.guis.GuiItem;

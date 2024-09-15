@@ -1,4 +1,4 @@
-package dev.timury.customkit.Listeners;
+package dev.timury.customkit.listeners;
 
 import dev.timury.customkit.CustomKit;
 import dev.timury.customkit.util.HexColours;

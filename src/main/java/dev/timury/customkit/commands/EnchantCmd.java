@@ -1,4 +1,4 @@
-package dev.timury.customkit.CMD;
+package dev.timury.customkit.commands;
 
 import dev.timury.customkit.CustomKit;
 import dev.timury.customkit.util.HexColours;

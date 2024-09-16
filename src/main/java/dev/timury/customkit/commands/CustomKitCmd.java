@@ -12,29 +12,29 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
+import java.util.stream.Stream;
 
 public class CustomKitCmd implements CommandExecutor, TabCompleter {
 
-    private final CustomKit instance = CustomKit.instance;
+    private final CustomKit plugin;
 
-    private static final String[] compl = { "edit", "save", "settings"};
-
-
+    public CustomKitCmd(final CustomKit plugin) {
+        this.plugin = plugin;
+    }
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         Player player = (Player) sender;
-        if(sender.hasPermission("CKA.customkit")) {
+        if (sender.hasPermission("CKA.customkit")) {
             StrikePracticeAPI api = StrikePractice.getAPI();
             PlayerKits playerCustomKit = api.getPlayerKits(player);
             if (args.length == 1) {
                 if (args[0].equalsIgnoreCase("save")) {
-                    if(instance.isIneditroom.get(player.getUniqueId()) != null && instance.isIneditroom.get(player.getUniqueId()).equals(true)) {
+                    if (plugin.isIneditroom.get(player.getUniqueId()) != null && plugin.isIneditroom.get(player.getUniqueId()).equals(true)) {
                         List<ItemStack> inventoryItems1 = new ArrayList<>();
                         for (ItemStack item : player.getInventory().getContents()) {
                             if (item != null) {
@@ -51,10 +51,10 @@ public class CustomKitCmd implements CommandExecutor, TabCompleter {
                         player.teleport(api.getSpawnLocation());
                         player.setGameMode(GameMode.SURVIVAL);
 
-                        if (instance.isIneditroom.get(player.getUniqueId()) != null && instance.isIneditroom.get(player.getUniqueId()).equals(false)) {
+                        if (plugin.isIneditroom.get(player.getUniqueId()) != null && plugin.isIneditroom.get(player.getUniqueId()).equals(false)) {
                             return false;
                         }
-                        if (instance.isIneditroom.get(player.getUniqueId()) != null && instance.isIneditroom.get(player.getUniqueId()).equals(true)) {
+                        if (plugin.isIneditroom.get(player.getUniqueId()) != null && plugin.isIneditroom.get(player.getUniqueId()).equals(true)) {
                             player.setInvisible(false);
                             for (Player players : Bukkit.getOnlinePlayers()) {
                                 player.showPlayer(players);
@@ -62,8 +62,8 @@ public class CustomKitCmd implements CommandExecutor, TabCompleter {
                         }
                         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "spawnitem give " + player.getName());
                         playerCustomKit.savePlayerKitsToFile();
-                        instance.isIneditroom.remove(player.getUniqueId());
-                        String message = HexColours.translate(Objects.requireNonNull(instance.getConfig().getString("save-mess")).replace("[", "").replace("]", ""));
+                        plugin.isIneditroom.remove(player.getUniqueId());
+                        String message = HexColours.translate(Objects.requireNonNull(plugin.getConfig().getString("save-mess")).replace("[", "").replace("]", ""));
                         player.sendMessage(message);
                     }
                 }
@@ -73,69 +73,71 @@ public class CustomKitCmd implements CommandExecutor, TabCompleter {
                     }
                 }
                 if (args[0].equalsIgnoreCase("edit")) {
-                        if (instance.isIneditroom.containsKey(player.getUniqueId())) {
-                            player.sendMessage(HexColours.translate(Objects.requireNonNull(instance.getConfig().getString("isIneditroom").replace("[", "").replace("]", ""))));
-                            return false;
-                        } else if (api.isInQueue(player)) {
-                            player.sendMessage(HexColours.translate(Objects.requireNonNull(instance.getConfig().getString("isInQueue").replace("[", "").replace("]", ""))));
-                            return false;
-                        } else if (api.isSpectator(player)) {
-                            player.sendMessage(HexColours.translate(Objects.requireNonNull(instance.getConfig().getString("isSpectator").replace("[", "").replace("]", ""))));
-                            return false;
-                        }else{
-                            instance.isIneditroom.put(player.getUniqueId(), true);
-                            player.sendMessage(HexColours.translate(Objects.requireNonNull(instance.getConfig().getString("edit-mess")).replace("[", "").replace("]", "")));
-                            CustomKit.isInvisible.add(player);
-                            player.teleport(instance.editRoomLocation());
-                            if(api.loadPlayerKits(player.getUniqueId()).getCustomKit().isHorse()){
-                                instance.hasHorse.put(player.getUniqueId(), true);
-                                playerCustomKit.getCustomKit().setHorse(false);
-                                playerCustomKit.savePlayerKitsToFile();
-                                api.loadPlayerKits(player.getUniqueId()).getCustomKit().giveKit(player);
+                    if (plugin.isIneditroom.containsKey(player.getUniqueId())) {
+                        player.sendMessage(HexColours.translate(Objects.requireNonNull(plugin.getConfig().getString("isIneditroom").replace("[", "").replace("]", ""))));
+                        return false;
+                    } else if (api.isInQueue(player)) {
+                        player.sendMessage(HexColours.translate(Objects.requireNonNull(plugin.getConfig().getString("isInQueue").replace("[", "").replace("]", ""))));
+                        return false;
+                    } else if (api.isSpectator(player)) {
+                        player.sendMessage(HexColours.translate(Objects.requireNonNull(plugin.getConfig().getString("isSpectator").replace("[", "").replace("]", ""))));
+                        return false;
+                    } else {
+                        plugin.isIneditroom.put(player.getUniqueId(), true);
+                        player.sendMessage(HexColours.translate(Objects.requireNonNull(plugin.getConfig().getString("edit-mess")).replace("[", "").replace("]", "")));
+                        CustomKit.isInvisible.add(player);
+                        player.teleport(plugin.editRoomLocation());
+                        if (api.loadPlayerKits(player.getUniqueId()).getCustomKit().isHorse()) {
+                            plugin.hasHorse.put(player.getUniqueId(), true);
+                            playerCustomKit.getCustomKit().setHorse(false);
+                            playerCustomKit.savePlayerKitsToFile();
+                            api.loadPlayerKits(player.getUniqueId()).getCustomKit().giveKit(player);
 
-                                playerCustomKit.getCustomKit().setHorse(true);
-                                playerCustomKit.savePlayerKitsToFile();
+                            playerCustomKit.getCustomKit().setHorse(true);
+                            playerCustomKit.savePlayerKitsToFile();
 
-                            }else {
-                                instance.hasHorse.put(player.getUniqueId(), false);
-                                api.loadPlayerKits(player.getUniqueId()).getCustomKit().giveKit(player);
-                            }
-                            player.setGameMode(GameMode.CREATIVE);
-                            player.setFlying(false);
-                            player.setAllowFlight(false);
-
-                            for (Player players : Bukkit.getOnlinePlayers()) {
-                                player.hidePlayer(players);
-                            }
+                        } else {
+                            plugin.hasHorse.put(player.getUniqueId(), false);
+                            api.loadPlayerKits(player.getUniqueId()).getCustomKit().giveKit(player);
                         }
-                        }
-                if (args[0].equalsIgnoreCase("settings")) {
-                    if (sender.hasPermission("CKA.customkit")) {
-                        if(instance.isIneditroom.get(player.getUniqueId()) != null && instance.isIneditroom.get(player.getUniqueId()).equals(true)){
-                            instance.GuiSettings(player);
+                        player.setGameMode(GameMode.CREATIVE);
+                        player.setFlying(false);
+                        player.setAllowFlight(false);
+
+                        for (Player players : Bukkit.getOnlinePlayers()) {
+                            player.hidePlayer(players);
                         }
                     }
                 }
-                }else {
+                if (args[0].equalsIgnoreCase("settings")) {
+                    if (sender.hasPermission("CKA.customkit")) {
+                        if (plugin.isIneditroom.get(player.getUniqueId()) != null && plugin.isIneditroom.get(player.getUniqueId()).equals(true)) {
+                            plugin.GuiSettings(player);
+                        }
+                    }
+                }
+            } else {
                 player.sendMessage("Usage: /ck [save/edit/settings]");
             }
-            }
+        }
         return false;
     }
 
     @Nullable
     @Override
-    public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
-        final List<String> modules = new ArrayList<String>(Arrays.asList(compl));
-        Set<String> compl = new HashSet<>();
-        compl.add("edit");
-        compl.add("save");
-
-        StringUtil.copyPartialMatches(args[0], compl, modules);
-
-        Collections.sort(modules);
-
-        return modules;
+    public List<String> onTabComplete(
+            final @NotNull CommandSender sender,
+            final @NotNull Command command,
+            final @NotNull String alias,
+            final String[] args
+    ) {
+        if (args.length == 0 || args.length == 1) {
+            return Stream.of("edit", "save", "settings")
+                    .filter(value -> value.startsWith(args[0]))
+                    .toList();
+        }
+        return Collections.emptyList();
     }
+
 }
 

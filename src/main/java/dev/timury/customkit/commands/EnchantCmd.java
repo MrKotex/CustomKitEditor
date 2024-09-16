@@ -18,53 +18,124 @@ import java.util.*;
 
 public class EnchantCmd implements CommandExecutor, TabCompleter {
 
-    private final CustomKit instance = CustomKit.instance;
+    private static final List<String> ENCHANTMENTS;
 
+    static {
+        ENCHANTMENTS = Arrays.stream(XEnchantment.values())
+                .filter(enchantment -> enchantment.getEnchant() != null)
+                .map(Enum::name).toList();
+    }
+
+    private final CustomKit plugin;
+
+    public EnchantCmd(final CustomKit plugin) {
+        this.plugin = plugin;
+    }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        Player player = (Player) sender;
-        if (instance.isIneditroom.get(player.getUniqueId()) != null && instance.isIneditroom.get(player.getUniqueId()).equals(true)) {
-            if (player.hasPermission("CKA.customkit")) {
-                if (args.length >= 1 && args[0].equalsIgnoreCase("add")) {
-                    sender.sendMessage(args[1]);
-                    try {
-                        Enchantment enchantment = translateEnchantment(args[1]);
-                        // Check if args[2] is not null and not an empty string
-                        if (args.length >= 3 && args[2] != null && !args[2].isEmpty()) {
-                            int enchantmentLvl = Integer.parseInt(args[2]);
+    public boolean onCommand(
+            final @NotNull CommandSender sender,
+            final @NotNull Command command,
+            final @NotNull String label,
+            final @NotNull String[] args
+    ) {
+        if (!(sender instanceof Player player)) {
+            return true;
+        }
 
-                            if (enchantment != null && enchantmentLvl <= enchantment.getMaxLevel()) {
-                                ItemStack itemInUse = player.getItemInHand();
+        if (!plugin.isIneditroom.get(player.getUniqueId())) {
+            return true;
+        }
 
-                                if (itemInUse != null && enchantment.canEnchantItem(itemInUse)) {
-                                    itemInUse.addEnchantment(enchantment, enchantmentLvl);
-                                    player.sendMessage(HexColours.translate(Objects.requireNonNull(Objects.requireNonNull(instance.getConfig().getString("enchantment-added")).replace("<enchantment>", args[1]).replace("[", "").replace("]", ""))));
-                                } else {
-                                    player.sendMessage(HexColours.translate(Objects.requireNonNull(Objects.requireNonNull(instance.getConfig().getString("enchantment-cannot-be-added")).replace("<enchantment>", args[1]).replace("[", "").replace("]", ""))));
-                                }
-                            } else {
-                                player.sendMessage(HexColours.translate(Objects.requireNonNull(Objects.requireNonNull(instance.getConfig().getString("enchantment-too-big-or-small-or-cannot-be-added-on-this-item")).replace("<enchantment>", args[1]).replace("[", "").replace("]", ""))));
-                            }
-                        } else {
-                            player.sendMessage(HexColours.translate(Objects.requireNonNull(Objects.requireNonNull(instance.getConfig().getString("enchantment-missing-level")).replace("<enchantment>", args[1]).replace("[", "").replace("]", ""))));
-                        }
-                    } catch (NumberFormatException e) {
-                        player.sendMessage(HexColours.translate(Objects.requireNonNull(Objects.requireNonNull(instance.getConfig().getString("enchantment-invalid")).replace("<enchantment>", args[1]).replace("[", "").replace("]", ""))));
+        if (!player.hasPermission("CKA.customkit")) {
+            return true;
+        }
+
+        if (args.length == 0) {
+            return true;
+        }
+
+        final String firstArg = args[0].toLowerCase();
+        switch (firstArg) {
+            case "allenchants": {
+                player.sendMessage(
+                        String.join(", ", ENCHANTMENTS)
+                );
+                return true;
+            }
+
+            case "add": {
+                try {
+                    Enchantment enchantment = findEnchantment(args[1]);
+                    if (args.length < 3) {
+                        player.sendMessage(
+                                HexColours.translate(
+                                        Objects.requireNonNull(
+                                                plugin.getConfig().getString("enchantment-missing-level")
+                                        ).replace("<enchantment>", args[1]).replace("[", "").replace("]", "")
+                                )
+                        );
+                        return true;
                     }
-                }
-                if (args.length >= 1 && args[0].equalsIgnoreCase("remove")) {
-                    Enchantment enchantment = Enchantment.getByName(args[1]);
-                    if (enchantment != null) {
-                        ItemStack itemInUse = player.getItemInHand();
-                        if (itemInUse != null && enchantment.canEnchantItem(itemInUse)) {
-                            itemInUse.removeEnchantment(enchantment);
-                            player.sendMessage(HexColours.translate(HexColours.translate(Objects.requireNonNull(Objects.requireNonNull(instance.getConfig().getString("enchantment-removed")).replace("<enchantment>", args[1]).replace("[", "").replace("]", "")))));
-                        }
+
+                    final int enchantmentLvl = Integer.parseInt(args[2]);
+                    if (enchantment == null || enchantmentLvl > enchantment.getMaxLevel()) {
+                        player.sendMessage(
+                                HexColours.translate(
+                                        Objects.requireNonNull(
+                                                plugin.getConfig().getString("enchantment-too-big-or-small-or-cannot-be-added-on-this-item")
+                                        ).replace("<enchantment>", args[1]).replace("[", "").replace("]", "")
+                                )
+                        );
+                        return true;
                     }
+
+                    final ItemStack itemInUse = player.getInventory().getItemInMainHand();
+                    if (enchantment.canEnchantItem(itemInUse)) {
+                        itemInUse.addEnchantment(enchantment, enchantmentLvl);
+                        player.sendMessage(
+                                HexColours.translate(
+                                        Objects.requireNonNull(
+                                                plugin.getConfig().getString("enchantment-added")
+                                        ).replace("<enchantment>", args[1]).replace("[", "").replace("]", "")
+                                )
+                        );
+                    } else {
+                        player.sendMessage(
+                                HexColours.translate(
+                                        Objects.requireNonNull(
+                                                plugin.getConfig().getString("enchantment-cannot-be-added")
+                                        ).replace("<enchantment>", args[1]).replace("[", "").replace("]", "")
+                                )
+                        );
+                    }
+                } catch (NumberFormatException e) {
+                    player.sendMessage(
+                            HexColours.translate(
+                                    Objects.requireNonNull(
+                                            plugin.getConfig().getString("enchantment-invalid")
+                                    ).replace("<enchantment>", args[1]).replace("[", "").replace("]", "")
+                            )
+                    );
                 }
-                if(args[0].equalsIgnoreCase("test")){
-                    listEnchantments(player);
+            }
+
+            case "remove": {
+                final Enchantment enchantment = Enchantment.getByName(args[1]);
+                if (enchantment == null) {
+                    return true;
+                }
+
+                final ItemStack itemInUse = player.getInventory().getItemInMainHand();
+                if (enchantment.canEnchantItem(itemInUse)) {
+                    itemInUse.removeEnchantment(enchantment);
+                    player.sendMessage(
+                            HexColours.translate(
+                                    Objects.requireNonNull(
+                                            plugin.getConfig().getString("enchantment-removed")
+                                    ).replace("<enchantment>", args[1]).replace("[", "").replace("]", "")
+                            )
+                    );
                 }
             }
         }
@@ -73,50 +144,31 @@ public class EnchantCmd implements CommandExecutor, TabCompleter {
 
     @Nullable
     @Override
-    public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
+    public List<String> onTabComplete(
+            final @NotNull CommandSender sender,
+            final @NotNull Command command,
+            final @NotNull String alias,
+            final String[] args
+    ) {
         if (args.length == 1) {
-            // If there's only one argument, provide completion for the command itself
-            return Arrays.asList("add", "remove");
+            return List.of("add", "remove");
         } else if (args.length == 2) {
-            // If there are two arguments, provide completion based on the second argument
-            String secondArg = args[1].toLowerCase();
-            List<String> completions = new ArrayList<>();
-            for (XEnchantment xEnchantment : XEnchantment.values()) {
-                Enchantment bukkitEnchantment = xEnchantment.getEnchant();
-                if (bukkitEnchantment != null) { // Check if bukkitEnchantment is not null
-                    String enchantmentName = bukkitEnchantment.getKey().getKey();
-                    if (enchantmentName.toLowerCase().startsWith(secondArg.toLowerCase())) {
-                        completions.add(enchantmentName);
-                    }
-                }
+            final String secondArg = args[1].toLowerCase();
+            if (secondArg.isEmpty() || secondArg.isBlank()) {
+                return ENCHANTMENTS;
             }
-            return completions;
+            return ENCHANTMENTS.stream().filter(name -> name.toLowerCase().startsWith(secondArg)).toList();
         } else {
-            // No completions for other argument lengths
             return Collections.emptyList();
         }
     }
 
-    public void listEnchantments(CommandSender sender) {
-        for (XEnchantment xEnchantment : XEnchantment.values()) {
-            Enchantment bukkitEnchantment = xEnchantment.getEnchant();
-            if (bukkitEnchantment != null) {
-                String enchantmentName = bukkitEnchantment.getKey().getKey();
-                sender.sendMessage(enchantmentName);
-            }
-        }
-    }
-
-    public static Enchantment translateEnchantment(String enchantmentName) {
-        XEnchantment xEnchantment = matchXEnchantment(enchantmentName);
+    private static Enchantment findEnchantment(String enchantmentName) {
+        final XEnchantment xEnchantment = XEnchantment.matchXEnchantment(enchantmentName).orElse(null);
         if (xEnchantment != null) {
             return xEnchantment.getEnchant();
         }
         return null;
-    }
-
-    public static XEnchantment matchXEnchantment(String enchantmentName) {
-        return XEnchantment.matchXEnchantment(enchantmentName).orElse(null);
     }
 
 }

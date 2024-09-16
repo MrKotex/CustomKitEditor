@@ -23,19 +23,23 @@ import java.util.List;
 
 public class Listeners implements Listener {
 
-    private final CustomKit instance = CustomKit.instance;
+    private final CustomKit plugin;
+
+    public Listeners(final CustomKit plugin) {
+        this.plugin = plugin;
+    }
 
     @EventHandler
-    public void onLeave(PlayerQuitEvent event){
+    public void onLeave(PlayerQuitEvent event) {
         Player player = event.getPlayer();
-        instance.isIneditroom.remove(player.getUniqueId());
+        plugin.isIneditroom.remove(player.getUniqueId());
         player.setGameMode(GameMode.SURVIVAL);
     }
 
     @EventHandler
-    public void DropItems(PlayerDropItemEvent event){
+    public void DropItems(PlayerDropItemEvent event) {
         Player player = event.getPlayer();
-        if(instance.isIneditroom.get(player.getUniqueId()) != null && instance.isIneditroom.get(player.getUniqueId()).equals(true) || player.getWorld().getName().equals("world")){
+        if (plugin.isIneditroom.get(player.getUniqueId()) != null && plugin.isIneditroom.get(player.getUniqueId()).equals(true) || player.getWorld().getName().equals("world")) {
             event.setCancelled(true);
         }
     }
@@ -50,7 +54,7 @@ public class Listeners implements Listener {
 
     @EventHandler
     public void itemuse(PlayerInteractEvent e) {
-        if (instance.isIneditroom.get(e.getPlayer().getUniqueId()) != null && instance.isIneditroom.get(e.getPlayer().getUniqueId()).equals(true) || e.getPlayer().getWorld().getName().equals("world")){
+        if (plugin.isIneditroom.get(e.getPlayer().getUniqueId()) != null && plugin.isIneditroom.get(e.getPlayer().getUniqueId()).equals(true) || e.getPlayer().getWorld().getName().equals("world")) {
             Material itemType = e.getItem() != null ? e.getItem().getType() : null;
             if (e.getAction() == Action.RIGHT_CLICK_BLOCK && itemType.name().endsWith("_SPAWN_EGG")) {
                 e.setCancelled(true);
@@ -59,7 +63,7 @@ public class Listeners implements Listener {
                 Block clickedBlock = e.getClickedBlock();
                 // Check if the clicked block is not null and if it is an anvil
                 if (clickedBlock != null && (clickedBlock.getType() == Material.ANVIL || clickedBlock.getType() == Material.CHIPPED_ANVIL || clickedBlock.getType() == Material.DAMAGED_ANVIL)) {
-                    if(e.getPlayer().hasPermission("CKA.customkit")){
+                    if (e.getPlayer().hasPermission("CKA.customkit")) {
                         e.getPlayer().performCommand("ck save");
                     }
                 }
@@ -68,18 +72,18 @@ public class Listeners implements Listener {
     }
 
     @EventHandler
-    public void onCraft(CraftItemEvent event){
+    public void onCraft(CraftItemEvent event) {
         Player player = (Player) event.getWhoClicked();
-        if(instance.isIneditroom.get(player.getUniqueId()) != null && instance.isIneditroom.get(player.getUniqueId()).equals(true) || player.getWorld().getName().equals("world")){
+        if (plugin.isIneditroom.get(player.getUniqueId()) != null && plugin.isIneditroom.get(player.getUniqueId()).equals(true) || player.getWorld().getName().equals("world")) {
             event.setCancelled(true);
         }
     }
 
     @EventHandler
-    public void PlaceBlock(BlockPlaceEvent event){
+    public void PlaceBlock(BlockPlaceEvent event) {
         Player player = event.getPlayer();
-        if(player.getWorld().getName().equals(instance.editRoomWorld()) || instance.isIneditroom.containsKey(player.getUniqueId())){
-            if(!player.hasPermission("StrikePractice.staff")){
+        if (player.getWorld().getName().equals(plugin.editRoomWorld()) || plugin.isIneditroom.containsKey(player.getUniqueId())) {
+            if (!player.hasPermission("StrikePractice.staff")) {
                 event.setCancelled(true);
             }
         }
@@ -87,17 +91,18 @@ public class Listeners implements Listener {
 
     @EventHandler
     public void onPickup(EntityPickupItemEvent event) {
-        if(event.getEntity() instanceof Player player){
-            if(instance.isIneditroom.get(player.getUniqueId()) != null && instance.isIneditroom.get(player.getUniqueId()).equals(true)){
+        if (event.getEntity() instanceof Player player) {
+            if (plugin.isIneditroom.get(player.getUniqueId()) != null && plugin.isIneditroom.get(player.getUniqueId()).equals(true)) {
                 player.setCanPickupItems(false);
             }
         }
     }
+
     @EventHandler
-    public void DestroyBlock(BlockBreakEvent event){
+    public void DestroyBlock(BlockBreakEvent event) {
         Player player = event.getPlayer();
-        if(player.getWorld().getName().equals(instance.editRoomWorld())){
-            if(!player.hasPermission("StrikePractice.staff")){
+        if (player.getWorld().getName().equals(plugin.editRoomWorld())) {
+            if (!player.hasPermission("StrikePractice.staff")) {
                 event.setCancelled(true);
             }
         }
@@ -107,9 +112,9 @@ public class Listeners implements Listener {
     @EventHandler
     public void onCommandPreprocess(PlayerCommandPreprocessEvent event) {
         Player player = event.getPlayer();
-        if(instance.isIneditroom.get(player.getUniqueId()) != null && instance.isIneditroom.get(player.getUniqueId()).equals(true)){
+        if (plugin.isIneditroom.get(player.getUniqueId()) != null && plugin.isIneditroom.get(player.getUniqueId()).equals(true)) {
             String used = event.getMessage().substring(1);
-            List<String> allowed = instance.getConfig().getStringList("access");
+            List<String> allowed = plugin.getConfig().getStringList("access");
             boolean isAllowed = false;
             for (String command : allowed) {
                 StringBuilder current = new StringBuilder();
@@ -122,7 +127,7 @@ public class Listeners implements Listener {
                 }
             }
             if (!isAllowed) {
-                String message = HexColours.translate(instance.getConfig().getString("access-mess").replace("[", "").replace("]", ""));
+                String message = HexColours.translate(plugin.getConfig().getString("access-mess").replace("[", "").replace("]", ""));
                 event.getPlayer().sendMessage(message);
                 event.setCancelled(true);
             }

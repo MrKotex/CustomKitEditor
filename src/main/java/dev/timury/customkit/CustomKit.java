@@ -25,25 +25,19 @@ import java.util.UUID;
 
 public final class CustomKit extends JavaPlugin {
 
-    @Getter
-    public static CustomKit instance;
-
-    StrikePracticeAPI api = StrikePractice.getAPI();
+    final StrikePracticeAPI api = StrikePractice.getAPI();
 
     public static ArrayList<Player> isInvisible = new ArrayList<>();
-
     public final HashMap<UUID, Boolean> isIneditroom = new HashMap<>();
-
     public final HashMap<UUID, Boolean> hasHorse = new HashMap<>();
 
     @Override
     public void onEnable() {
         // Plugin startup logic
         getLogger().info("Plugin has been enabled");
-        instance = this;
         registerEvents();
-        Bukkit.getPluginCommand("ck").setExecutor(new CustomKitCmd());
-        Bukkit.getPluginCommand("ench").setExecutor(new EnchantCmd());
+        Bukkit.getPluginCommand("ck").setExecutor(new CustomKitCmd(this));
+        Bukkit.getPluginCommand("ench").setExecutor(new EnchantCmd(this));
         saveDefaultConfig();
     }
 
@@ -51,19 +45,18 @@ public final class CustomKit extends JavaPlugin {
     public void onDisable() {
         // Plugin shutdown logic
         getLogger().info("Plugin has been disabled");
-        instance = null;
     }
 
-    public void registerEvents(){
+    public void registerEvents() {
         PluginManager pm = getServer().getPluginManager();
-        pm.registerEvents(new Listeners(), this);
+        pm.registerEvents(new Listeners(this), this);
     }
 
 
-    public Location editRoomLocation(){
+    public Location editRoomLocation() {
         String editingPlace = (String) api.getStrikePractice().getConfig().get("editing-place");
-        if(editingPlace == null || editingPlace.isEmpty()){
-            String configLoc = instance.getConfig().getString("editing-place");
+        if (editingPlace == null || editingPlace.isEmpty()) {
+            String configLoc = getConfig().getString("editing-place");
             String[] parts = configLoc.split(", ");
             String worldName = parts[5]; // World name is at index 5
             double x = Double.parseDouble(parts[0]);
@@ -84,13 +77,13 @@ public final class CustomKit extends JavaPlugin {
         }
     }
 
-    public String editRoomWorld(){
+    public String editRoomWorld() {
         String editingPlace = (String) api.getStrikePractice().getConfig().get("editing-place");
-        if(editingPlace == null || editingPlace.isEmpty()){
-            String configLoc = instance.getConfig().getString("editing-place");
+        if (editingPlace == null || editingPlace.isEmpty()) {
+            String configLoc = getConfig().getString("editing-place");
             String[] parts = configLoc.split(", ");
             return parts[5];
-        }else {
+        } else {
 
             String[] parts = editingPlace.split(", ");
             return parts[5];
@@ -98,8 +91,7 @@ public final class CustomKit extends JavaPlugin {
     }
 
 
-
-    public void GuiSettings (Player player){
+    public void GuiSettings(Player player) {
         ItemStack glass = new ItemStack(Material.BLACK_STAINED_GLASS_PANE);
         ItemMeta glass_meta = glass.getItemMeta();
         glass_meta.setDisplayName(HexColours.translate(" "));
@@ -162,20 +154,19 @@ public final class CustomKit extends JavaPlugin {
             player.sendMessage(HexColours.translate("#78ff85Horese mode was enabled!"));
             gui.close(player);
         });
-        gui.getFiller().fillBetweenPoints(0,0,8,18, glassgui);
+        gui.getFiller().fillBetweenPoints(0, 0, 8, 18, glassgui);
 
-        if(api.getPlayerKits(player).getCustomKit().isBuild()){
+        if (api.getPlayerKits(player).getCustomKit().isBuild()) {
             gui.setItem(12, onbuild);
-        }else {
+        } else {
             gui.setItem(12, offbuild);
         }
 
-        if(api.getPlayerKits(player).getCustomKit().isHorse()){
+        if (api.getPlayerKits(player).getCustomKit().isHorse()) {
             gui.setItem(14, onhorse);
-        }else{
+        } else {
             gui.setItem(14, offhorse);
         }
-
 
 
         gui.open(player);

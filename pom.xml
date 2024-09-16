@@ -57,14 +57,9 @@
                     <relocations>
                         <relocation>
                             <pattern>com.cryptomorin.xseries</pattern>
-                            <!-- Be sure to change the package below -->
-                            <shadedPattern>my.plugin.utils</shadedPattern>
+                            <shadedPattern>dev.timury.customkit.shade.xseries</shadedPattern>
                         </relocation>
                     </relocations>
-                    <!-- Here you can remove the classes you don't use. -->
-                    <!-- These are some examples. -->
-                    <!-- The "unused" package and SkullCacheListener are excluded by default. -->
-                    <!-- Some utilities such a XItemStack depend on more than 3 other classes, so watch out. -->
                     <filters>
                         <filter>
                             <artifact>*:*</artifact>
@@ -122,7 +117,7 @@
             <artifactId>StrikePractice</artifactId>
             <version>3.9.0</version>
             <scope>system</scope>
-            <systemPath>${project.basedir}/libs/StrikePractice-dev-85853950987-1707053183.jar</systemPath>
+            <systemPath>${project.basedir}/libs/StrikePractice.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>dev.triumphteam</groupId>

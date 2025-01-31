@@ -1,4 +1,7 @@
+
+> ## IMPORTANT: $\color{red}{\textsf{THIS ADDON IS FUNTIONAL, HOWEVER, IT LACKS SOME SECURITY IMPLEMENTATIONS. I ADVISE YOU TO FORK IT AND ADD FOR EXAMPLE PREVENTION FOR TAKING INVALID ITEMS AND ENCHANTMENTS. YOU CAN ALWAYS CONTRIBUTE TO THIS PROJECT. THANKS <3}}$
 # CustomKitEditor
+
 
 CustomKitEditor is an add-on for the StrikePractice plugin. Now, players can make their CustomKits in their inventory instead of Gui. They are given Gamemode Creative and the ability to choose if they want to fight on horses or if they should be able to build during the fight.
 
